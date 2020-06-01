@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        table {
+            border-collapse: collapse;
+            text-align: center;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 16px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .page_heading span {
+            float: right;
+            padding-right: 50px;
+        }
+
+        form {
+            float: left;
+        }
+
+        .container {
+            position: relative;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px 0 30px 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="errors"></div>
+    <div class="page_heading">
+        <span><button type="submit" class="btnLogout">Logout</button></span>
+        <span><form><input type="text" name="email"><button type="submit"
+                                                            class="btnSubmit">Add User</button> </form></span>
+        <h3>User Emails</h3>
+    </div>
+    <table id="table">
+        <tr>
+            <th>Emails</th>
+        </tr>
+    </table>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $.urlParam = function (name) {
+                var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+                if (results == null) {
+                    return null;
+                }
+                return decodeURI(results[1]) || 0;
+            }
+            $.ajax({
+                url: "http://localhost:3000/getUserList",
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + $.urlParam("token"),
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $.each(data, function (index, value) {
+                        $("#table").append("<tr><td>" + value["email"] + "</td><td><button style='cursor: pointer' class='delete' id='data_" + value["_id"] + "'>Delete</button></td></tr>")
+                    });
+                },
+                error: function (error) {
+                    window.location.href = "http://localhost:3000/page/login.html?error=Un-Authorized"
+                }
+            })
+            return false;
+        });
+        $('form').on('submit', (function (e) {
+            e.preventDefault();
+            var formData = {
+                'email': $('input[name=email]').val(),
+            };
+            $.ajax({
+                url: "http://localhost:3000/addUser",
+                type: 'POST',
+                data: JSON.stringify(formData),
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + $.urlParam("token"),
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    window.location.reload()
+                },
+                error: function (error, status) {
+                    if (status == 401) {
+                        window.location.href = "http://localhost:3000/page/login.html?error=Un-Authorized"
+                    } else {
+                        alert(error.responseText)
+                    }
+                }
+            })
+            return false;
+        }));
+        $(".btnLogout").click(function () {
+            $.ajax({
+                url: "http://localhost:3000/logout",
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + $.urlParam("token"),
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    window.location.href = 'http://localhost:3000/';
+                },
+                error: function (error) {
+                    alert(error.responseText)
+                }
+            })
+            return false;
+        });
+        $('body').on('click', '.delete', function () {
+            var el = this;
+            var id = this.id;
+            var splitid = id.split("_");
+            var userId = splitid[1];
+            $.ajax({
+                url: "http://localhost:3000/deleteUser",
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify({
+                    user_id: userId
+                }),
+                headers: {
+                    'Authorization': 'Bearer ' + $.urlParam("token"),
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    window.location.reload()
+                },
+                error: function (error) {
+                    alert(error.responseText)
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

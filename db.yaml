@@ -1,0 +1,17 @@
+version: "3.3"
+services:
+  oauth_mongodb:
+    image: mongo
+    container_name : oauth_mongodb
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGODB_DATABASE=oauth
+    volumes:
+      - ./_data/Mongo/:/data/db
+networks:
+  default:
+    external:
+      name: oauth
+
+

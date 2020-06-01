@@ -1,0 +1,28 @@
+version: "2.3"
+
+services:
+  oauth_task:
+    container_name: oauth_task
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: gomon
+    restart: always
+    environment:
+      - JWT_SECRET=oauth
+      - DEFAULT_USER=arthamanudeep@gmail.com
+      - USER_DB_HOST=oauth_mongodb
+      - USER_DB_NAME=user
+      - USER_DB_USERNAME=oauth
+      - USER_DB_PASSWORD=oauth
+      - GOOGLE_REDIRECT_URL=http://localhost:3000/callback
+      - GOOGLE_CLIENT_ID=891309034819-ij1ljo2f3m9cercidlljq4eakudj97ea.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=4juigZvwMoKxwQLe0e-zpa8k
+    volumes:
+      - .:/go/src/oauth/
+    ports:
+      - "3000:3000"
+networks:
+  default:
+    external:
+      name: oauth
