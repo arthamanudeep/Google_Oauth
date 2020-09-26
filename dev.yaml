@@ -16,8 +16,8 @@ services:
       - USER_DB_USERNAME=guest
       - USER_DB_PASSWORD=guest
       - GOOGLE_REDIRECT_URL=http://localhost:3000/callback
-      - GOOGLE_CLIENT_ID=891309034819-ij1ljo2f3m9cercidlljq4eakudj97ea.apps.googleusercontent.com
-      - GOOGLE_CLIENT_SECRET=4juigZvwMoKxwQLe0e-zpa8k
+      - GOOGLE_CLIENT_ID={client_id}
+      - GOOGLE_CLIENT_SECRET={client_secret}
     volumes:
       - .:/go/src/oauth/
     ports:
