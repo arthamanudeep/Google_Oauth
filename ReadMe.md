@@ -41,6 +41,7 @@ Docker-compose Installation
 
 - Run "sudo docker create network oauth"
 - Change default user account in dev.yaml file -> environments DEFAULT_USER
+- Add your google google_client_id and google_secret_key in dev.yaml file
 - Run "sudo docker-compose -f db.yaml up -d"
 - Run "sudo docker-compose -f dev.yaml up"
 - Go to browser and type "http://localhost:3000"
